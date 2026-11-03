@@ -57,6 +57,15 @@ Koden følger vanlig praksis for VST3/JUCE:
 
 JUCE er dobbeltlisensiert under AGPLv3 og en kommersiell JUCE-lisens. Til privat bruk er det uproblematisk. Skal pluginen deles som lukket kode eller selges, kan du trenge en kommersiell lisens. Se [JUCE-lisensen](https://juce.com/legal/juce-9-licence/).
 
+## Installere
+
+Last ned `VariMu660-macOS.pkg` under **Releases** (eller fra siste bygg under **Actions**) og dobbeltklikk den. Installeren legger:
+
+- `VariMu 660.vst3` i `/Library/Audio/Plug-Ins/VST3/`
+- `VariMu 660.component` (AU, for Logic) i `/Library/Audio/Plug-Ins/Components/`
+
+Installeren er ikke signert med et Apple-utviklersertifikat. Hvis macOS sier at den ikke kan åpnes: høyreklikk fila og velg **Åpne**, eller gå til **Systeminnstillinger → Personvern og sikkerhet** og trykk **Åpne likevel**.
+
 ## Bygge på Mac
 
 Du trenger Xcode (fra App Store) og CMake (`brew install cmake`).
@@ -88,9 +97,9 @@ xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/"VariMu 660.vst3"
 
 Universal binary (Apple Silicon + Intel) bygges automatisk.
 
-### Alternativ: bygg via GitHub (uten Xcode)
+### Bygg via GitHub
 
-Legg prosjektet i et GitHub-repo. Workflowen i `.github/workflows/build-macos.yml` bygger VST3 + AU på en Mac-server ved hver push, og ferdig zip kan lastes ned under *Actions → siste kjøring → Artifacts*.
+Workflowen i `.github/workflows/build-macos.yml` kjører ved hver push: bygger VST3 + AU, kjører DSP-testen og pluginval, og lager `.pkg` og zip under *Actions → siste kjøring → Artifacts*. En tag som `v1.0.1` lager i tillegg en release med filene.
 
 ## Tester
 
