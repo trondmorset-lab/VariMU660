@@ -1,0 +1,62 @@
+name: Build macOS (VST3 + AU)
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # trengs for å lage release ved tag
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache JUCE
+        uses: actions/cache@v4
+        with:
+          path: build/_deps
+          key: juce-9.0.5-${{ runner.os }}
+
+      - name: Configure
+        run: cmake -B build -G Xcode -DVARIMU_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --config Release --target VariMu660_VST3 VariMu660_AU DspTest -- -quiet
+
+      - name: DSP-test
+        run: ./build/Release/DspTest
+
+      - name: Ad hoc-signering (kreves for Apple Silicon)
+        run: |
+          codesign --force --deep --sign - "build/VariMu660_artefacts/Release/VST3/VariMu 660.vst3"
+          codesign --force --deep --sign - "build/VariMu660_artefacts/Release/AU/VariMu 660.component"
+
+      - name: Valider med pluginval
+        run: |
+          curl -sSL -o pluginval.zip https://github.com/Tracktion/pluginval/releases/latest/download/pluginval_macOS.zip
+          unzip -q pluginval.zip
+          pluginval.app/Contents/MacOS/pluginval --strictness-level 5 --skip-gui-tests \
+            --validate "build/VariMu660_artefacts/Release/VST3/VariMu 660.vst3"
+
+      - name: Pakk
+        run: |
+          mkdir -p dist
+          cp -R "build/VariMu660_artefacts/Release/VST3/VariMu 660.vst3" dist/
+          cp -R "build/VariMu660_artefacts/Release/AU/VariMu 660.component" dist/
+          ditto -c -k --keepParent dist VariMu660-macOS.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VariMu660-macOS
+          path: VariMu660-macOS.zip
+
+      - name: Release (kun ved tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" VariMu660-macOS.zip --title "VariMu 660 ${{ github.ref_name }}" --notes "VST3 og AU for macOS (Apple Silicon + Intel)."
