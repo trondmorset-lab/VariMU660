@@ -75,16 +75,17 @@ int main()
         std::printf ("  TC%d: kort topp (50 ms): %5.2f s   vedvarende (8 s): %5.2f s\n",
                      tc, releaseTime (tc, 0.05), releaseTime (tc, 8.0));
 
-    std::printf ("\n== Harmonisk innhold, color 0.4, -10 dBFS, 1 kHz ==\n");
+    std::printf ("\n== Harmonisk innhold, 1 kHz, -10 dBFS inn, threshold 6 ==\n");
+    for (float col : { 0.0f, 0.4f, 0.7f, 1.0f })
     {
         varimu::Compressor c; c.prepare (sr);
-        varimu::Compressor::Params p; p.threshold = 6; p.color = 0.4f; p.link = false; c.setParams (p);
+        varimu::Compressor::Params p; p.threshold = 6; p.color = col; p.link = false; c.setParams (p);
         auto v = sine (-10, 2.0); float* d[1] = { v.data() }; c.process (d, 1, (int) v.size());
         auto goertzel = [&] (double f) { double re = 0, im = 0; size_t s0 = v.size() / 2;
             for (size_t i = s0; i < v.size(); ++i) { re += v[i] * std::cos (2 * M_PI * f * i / sr); im += v[i] * std::sin (2 * M_PI * f * i / sr); }
             return 20 * std::log10 (std::sqrt (re * re + im * im) + 1e-12); };
-        double h1 = goertzel (1000), h2 = goertzel (2000), h3 = goertzel (3000);
-        std::printf ("  H2: %.1f dB  H3: %.1f dB (relativt grunntone)\n", h2 - h1, h3 - h1);
+        const double h1 = goertzel (1000), h2 = goertzel (2000), h3 = goertzel (3000);
+        std::printf ("  Color %3.0f %%: H2 %6.1f dB  H3 %6.1f dB (relativt grunntone)\n", col * 100, h2 - h1, h3 - h1);
     }
     return 0;
 }

@@ -1,5 +1,7 @@
 # VariMu 660
 
+<img src="assets/v-mu-logo-512.png" alt="V-MU-logo" width="128">
+
 En enkel variable-mu-kompressor i VST3-format (og AU på Mac), inspirert av Fairchild 660/670. Bygget med JUCE 9.0.5.
 
 ![Skjermbilde](screenshot.png)
@@ -12,7 +14,7 @@ En enkel variable-mu-kompressor i VST3-format (og AU på Mac), inspirert av Fair
 | **Threshold** (0–10) | Terskel. Høyere tall = lavere terskel = mer kompresjon (fra ca. -4 til -36 dBFS). |
 | **Time Constant** (1–6) | De seks klassiske attack/release-kombinasjonene (se under). |
 | **Output** (-24 til +24 dB) | Utgangsnivå/makeup. |
-| **Tube Color** (0–100 %) | Mengde rør- og transformatormetning. 0 % = ren kompresjon. |
+| **Tube Color** (0–100 %) | Mengde rør- og transformatormetning, mest 2. harmonisk. 0 % = ren kompresjon, 40 % = varm farge, 100 % = tydelig metning. |
 | **Mix** | Parallellkompresjon (dry/wet, latenskompensert). |
 | **Stereo Link** | Felles gain-reduksjon for venstre/høyre (ingen stereobilde-vandring). Av = dual mono. |
 

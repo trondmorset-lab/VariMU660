@@ -165,15 +165,17 @@ private:
 
         if (color > 0.0f)
         {
-            // Rør: biasen forskyves med gain-reduksjonen, som i et ekte vari-mu-rør.
-            const float drive = 1.2f + 3.0f * color;
-            const float bias  = 0.08f + 0.22f * color + 0.012f * std::min (gr, 20.0f) * color;
+            // Rør: fargen kommer mest fra asymmetri (bias => 2. harmonisk), ikke fra hard
+            // drive (som gir 3. harmonisk og klipping). Biasen forskyves også med
+            // gain-reduksjonen, som i et ekte vari-mu-rør.
+            const float drive = 1.2f + 4.5f * color;
+            const float bias  = 0.10f + 0.65f * color + 0.03f * std::min (gr, 20.0f) * color;
             const float tb    = std::tanh (bias);
             const float tube  = (std::tanh (drive * x + bias) - tb) / (drive * (1.0f - tb * tb));
             y = x + color * (tube - x);
 
             // Utgangstransformator: myk metning av lave frekvenser.
-            const float xfDrive = 1.0f + 5.0f * color;
+            const float xfDrive = 1.0f + 10.0f * color;
             s.low = lowCoeff * s.low + (1.0f - lowCoeff) * y;
             y += color * (std::tanh (s.low * xfDrive) / xfDrive - s.low);
         }

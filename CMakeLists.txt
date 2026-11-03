@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(VariMu660 VERSION 1.0.0 LANGUAGES C CXX)
+project(VariMu660 VERSION 1.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -36,6 +36,8 @@ juce_add_plugin(VariMu660
     PLUGIN_CODE Vm66
     FORMATS ${PLUGIN_FORMATS}
     PRODUCT_NAME "VariMu 660"
+    ICON_BIG assets/v-mu-logo-1024.png
+    ICON_SMALL assets/v-mu-logo-256.png
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
@@ -49,6 +51,9 @@ target_sources(VariMu660 PRIVATE
     Source/PluginProcessor.cpp
     Source/PluginEditor.cpp)
 
+# Logoen bakes inn i pluginen og vises i GUI-et
+juce_add_binary_data(VariMuAssets SOURCES assets/v-mu-logo-256.png)
+
 target_compile_definitions(VariMu660 PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
@@ -57,6 +62,7 @@ target_compile_definitions(VariMu660 PUBLIC
 
 target_link_libraries(VariMu660
     PRIVATE
+        VariMuAssets
         juce::juce_audio_utils
         juce::juce_dsp
     PUBLIC
@@ -72,5 +78,5 @@ if(VARIMU_BUILD_TESTS)
     target_sources(GuiSnapshot PRIVATE Tests/GuiSnapshot.cpp Source/PluginProcessor.cpp Source/PluginEditor.cpp)
     target_compile_definitions(GuiSnapshot PRIVATE JUCE_MODAL_LOOPS_PERMITTED=1 JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0
         JucePlugin_Name="VariMu 660")
-    target_link_libraries(GuiSnapshot PRIVATE juce::juce_audio_utils juce::juce_dsp)
+    target_link_libraries(GuiSnapshot PRIVATE VariMuAssets juce::juce_audio_utils juce::juce_dsp)
 endif()

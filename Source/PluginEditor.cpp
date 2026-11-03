@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include "BinaryData.h"
 
 namespace
 {
@@ -214,6 +215,7 @@ VariMuAudioProcessorEditor::VariMuAudioProcessorEditor (VariMuAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), meter (p.gainReductionDb)
 {
     setLookAndFeel (&lnf);
+    logo = juce::ImageCache::getFromMemory (BinaryData::vmulogo256_png, BinaryData::vmulogo256_pngSize);
 
     setupKnob (input,     ParamIDs::input,     "INPUT GAIN");
     setupKnob (threshold, ParamIDs::threshold, "THRESHOLD");
@@ -306,14 +308,26 @@ void VariMuAudioProcessorEditor::paint (juce::Graphics& g)
     drawScrew (g, { 22.0f, b.getHeight() - 22.0f });
     drawScrew (g, { b.getWidth() - 22.0f, b.getHeight() - 22.0f });
 
-    // tittel
+    // Logo til venstre, tittel og undertittel venstrejustert ved siden av, sentrert som én blokk
+    const juce::String title ("VARI-MU 660");
+    const juce::String subtitle ("VARIABLE-MU  TUBE  COMPRESSOR  /  LIMITER");
+    const auto titleFont = engravedFont (24.0f);
+    const auto subFont = engravedFont (11.0f, false);
+    const float textW = juce::jmax (juce::GlyphArrangement::getStringWidth (titleFont, title),
+                                    juce::GlyphArrangement::getStringWidth (subFont, subtitle));
+    const float logoSize = 46.0f, gap = 14.0f;
+    const float x0 = (b.getWidth() - (logoSize + gap + textW)) * 0.5f;
+    const float textX = x0 + logoSize + gap;
+
+    if (logo.isValid())
+        g.drawImage (logo, juce::Rectangle<float> (x0, 11.0f, logoSize, logoSize), juce::RectanglePlacement::centred);
+
     g.setColour (ink);
-    g.setFont (engravedFont (24.0f));
-    g.drawText ("VARI-MU 660", juce::Rectangle<float> (0, 14, b.getWidth(), 28), juce::Justification::centred);
-    g.setFont (engravedFont (11.0f, false));
+    g.setFont (titleFont);
+    g.drawText (title, juce::Rectangle<float> (textX, 12, textW + 4, 28), juce::Justification::centredLeft);
+    g.setFont (subFont);
     g.setColour (engraving);
-    g.drawText ("VARIABLE-MU  TUBE  COMPRESSOR  /  LIMITER", juce::Rectangle<float> (0, 40, b.getWidth(), 16),
-                juce::Justification::centred);
+    g.drawText (subtitle, juce::Rectangle<float> (textX, 39, textW + 4, 16), juce::Justification::centredLeft);
 
     // innfelt linje under tittel
     g.setColour (juce::Colour (0x40000000));

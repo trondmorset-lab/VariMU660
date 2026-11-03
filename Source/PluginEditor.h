@@ -52,6 +52,7 @@ private:
 
     VariMuAudioProcessor& audioProcessor;
     VintageLookAndFeel lnf;
+    juce::Image logo;
 
     Knob input, threshold, timeConst, output, color, mix;
     juce::ToggleButton linkButton { "STEREO LINK" };
