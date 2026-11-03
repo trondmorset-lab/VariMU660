@@ -99,7 +99,7 @@ Universal binary (Apple Silicon + Intel) bygges automatisk.
 
 ### Bygg via GitHub
 
-Workflowen i `.github/workflows/build-macos.yml` kjører ved hver push: bygger VST3 + AU, kjører DSP-testen og pluginval, og lager `.pkg` og zip under *Actions → siste kjøring → Artifacts*. En tag som `v1.0.1` lager i tillegg en release med filene.
+Workflowen i `.github/workflows/build-macos.yml` kjører ved hver push: bygger VST3 + AU, kjører DSP-testen og pluginval, og lager `.pkg` og zip under *Actions → siste kjøring → Artifacts*. Når `VERSION` i `CMakeLists.txt` økes (f.eks. til 1.0.1), lager bygget i tillegg en ny release med filene.
 
 ## Tester
 
