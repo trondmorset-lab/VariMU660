@@ -4,6 +4,10 @@
 
 En enkel variable-mu-kompressor i VST3-format (og AU på Mac), inspirert av Fairchild 660/670. Bygget med JUCE 9.0.5.
 
+If you like this app and want to support me:
+
+<a href="https://www.buymeacoffee.com/trondmorsej" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 ![Skjermbilde](screenshot.png)
 
 ## Kontroller
