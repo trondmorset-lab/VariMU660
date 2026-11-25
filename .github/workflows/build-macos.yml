@@ -79,6 +79,7 @@ jobs:
           path: |
             VariMu660-macOS.zip
             VariMu660-macOS.pkg
+          retention-days: 1
 
       # Ny release lages automatisk når versjonen i CMakeLists.txt ikke har en release fra før
       - name: Release (ny versjon på main)
